@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 '''Fairly basic set of tools for realtime data augmentation on image data.
 Can easily be extended to include new transformations,
 new preprocessing methods, etc...
@@ -112,7 +114,10 @@ def list_pictures(directory, ext='jpg|jpeg|bmp|png'):
     return [join(directory, f) for f in listdir(directory)
             #if isfile(join(directory, f)) and re.match('([\w]+\.(?:' + ext + '))', f)]
             # Note: GTEx file names include hyphens, so I modified the RE. -DM
-            if isfile(join(directory, f)) and re.match('([^\.]+\.(?:' + ext + '))', f)]
+            #if isfile(join(directory, f)) and re.match('([^\.]+\.(?:' + ext + '))', f)]
+            # Note: allows for filenames with periods. Checks if extension located at end of string.
+            if isfile(join(directory, f)) and re.match('.+[' + ext + ']$', f)]
+
 
 class ImageDataGenerator(object):
     '''Generate minibatches with

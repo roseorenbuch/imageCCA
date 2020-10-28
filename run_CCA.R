@@ -53,79 +53,33 @@ SCCA_coefs <- function(cca) {
 
 SCCA_cors <- function(cca) data_frame(k = 1:length(cca$d), d = cca$d)
 
+args <- commandArgs(trailingOnly=TRUE)
+indir <- args[1]
+outdir <- args[2]
+K <- as.integer(args[3])
 
-##### BRCA
+dir.create(outdir, showWarnings = FALSE)
 
 ### CAE3 PCA
 
-image <- load_image_data("BRCA/CCA_input_image.txt")
-expr <- load_expr_data("BRCA/CCA_input_expr.txt", "BRCA/CCA_genes.txt")
+image <- load_image_data(paste(indir,"/CCA_input_image.txt", sep =""))
+expr <- load_expr_data(paste(indir,"/CCA_input_expr.txt", sep =""), paste(indir,"/CCA_genes.txt", sep =""))
 
-cca <- SCCA(list(gene = expr, image = image), penalty_x=0.05, penalty_z=0.15, K=100)
-cca$CCA_var1 %>% as_data_frame() %>% write_tsv("BRCA/CCA_ls_canonvar_expr.txt", col_names=F)
-cca$CCA_var2 %>% as_data_frame() %>% write_tsv("BRCA/CCA_ls_canonvar_image.txt", col_names=F)
-cca %>% SCCA_coefs() %>% write_tsv("BRCA/CCA_ls_coefs.txt")
+cca <- SCCA(list(gene = expr, image = image), penalty_x=0.05, penalty_z=0.15, K=K)
+cca$CCA_var1 %>% as_data_frame() %>% write_tsv(paste(outdir,"/CCA_ls_canonvar_expr.txt", sep =""), col_names=F)
+cca$CCA_var2 %>% as_data_frame() %>% write_tsv(paste(outdir,"/CCA_ls_canonvar_image.txt", sep =""), col_names=F)
+cca %>% SCCA_coefs() %>% write_tsv(paste(outdir,"/CCA_ls_coefs.txt", sep =""))
 
 
 ### CAE3 discriminative PCA
 
-image <- load_image_data("BRCA_discrim/CCA_input_image.txt")
-expr <- load_expr_data("BRCA_discrim/CCA_input_expr.txt", "BRCA_discrim/CCA_genes.txt")
+image <- load_image_data(paste(indir,"/discrim_CCA_input_image.txt", sep =""))
+expr <- load_expr_data(paste(indir,"/discrim_CCA_input_expr.txt", sep =""), paste(indir,"/discrim_CCA_genes.txt", sep =""))
 
 cca <- SCCA(list(gene = expr, image = image), penalty_x=0.05, penalty_z=0.15, K=ncol(image))
-cca$CCA_var1 %>% as_data_frame() %>% write_tsv("BRCA_discrim/CCA_ls_canonvar_expr.txt", col_names=F)
-cca$CCA_var2 %>% as_data_frame() %>% write_tsv("BRCA_discrim/CCA_ls_canonvar_image.txt", col_names=F)
-cca %>% SCCA_coefs() %>% write_tsv("BRCA_discrim/CCA_ls_coefs.txt")
-
-
-##### LGG
-
-### CAE3 PCA
-
-image <- load_image_data("LGG/CCA_input_image.txt")
-expr <- load_expr_data("LGG/CCA_input_expr.txt", "LGG/CCA_genes.txt")
-
-cca <- SCCA(list(gene = expr, image = image), penalty_x=0.05, penalty_z=0.15, K=100)
-cca$CCA_var1 %>% as_data_frame() %>% write_tsv("LGG/CCA_ls_canonvar_expr.txt", col_names=F)
-cca$CCA_var2 %>% as_data_frame() %>% write_tsv("LGG/CCA_ls_canonvar_image.txt", col_names=F)
-cca %>% SCCA_coefs() %>% write_tsv("LGG/CCA_ls_coefs.txt")
-
-
-### CAE3 discriminative PCA
-
-image <- load_image_data("LGG_discrim/CCA_input_image.txt")
-expr <- load_expr_data("LGG_discrim/CCA_input_expr.txt", "LGG_discrim/CCA_genes.txt")
-
-cca <- SCCA(list(gene = expr, image = image), penalty_x=0.05, penalty_z=0.15, K=ncol(image))
-cca$CCA_var1 %>% as_data_frame() %>% write_tsv("LGG_discrim/CCA_ls_canonvar_expr.txt", col_names=F)
-cca$CCA_var2 %>% as_data_frame() %>% write_tsv("LGG_discrim/CCA_ls_canonvar_image.txt", col_names=F)
-cca %>% SCCA_coefs() %>% write_tsv("LGG_discrim/CCA_ls_coefs.txt")
-
-
-##### GTEx
-
-### CAE3 PCA
-
-image <- load_image_data("GTEx/CCA_input_image.txt")
-expr <- load_expr_data("GTEx/CCA_input_expr.txt", "GTEx/CCA_genes.txt")
-
-cca <- SCCA(list(gene = expr, image = image), penalty_x=0.05, penalty_z=0.15, K=100)
-cca$CCA_var1 %>% as_data_frame() %>% write_tsv("GTEx/CCA_ls_canonvar_expr.txt", col_names=F)
-cca$CCA_var2 %>% as_data_frame() %>% write_tsv("GTEx/CCA_ls_canonvar_image.txt", col_names=F)
-cca %>% SCCA_coefs() %>% write_tsv("GTEx/CCA_ls_coefs.txt")
-
-
-### CAE3 discriminative PCA
-
-image <- load_image_data("GTEx_discrim/CCA_input_image.txt")
-expr <- load_expr_data("GTEx_discrim/CCA_input_expr.txt", "GTEx_discrim/CCA_genes.txt")
-
-cca <- SCCA(list(gene = expr, image = image), penalty_x=0.05, penalty_z=0.15, K=ncol(image))
-cca$CCA_var1 %>% as_data_frame() %>% write_tsv("GTEx_discrim/CCA_ls_canonvar_expr.txt", col_names=F)
-cca$CCA_var2 %>% as_data_frame() %>% write_tsv("GTEx_discrim/CCA_ls_canonvar_image.txt", col_names=F)
-cca %>% SCCA_coefs() %>% write_tsv("GTEx_discrim/CCA_ls_coefs.txt")
-
-
+cca$CCA_var1 %>% as_data_frame() %>% write_tsv(paste(outdir,"/discrim_CCA_ls_canonvar_expr.txt", sep =""), col_names=F)
+cca$CCA_var2 %>% as_data_frame() %>% write_tsv(paste(outdir,"/discrim_CCA_ls_canonvar_image.txt", sep =""), col_names=F)
+cca %>% SCCA_coefs() %>% write_tsv(paste(outdir,"/discrim_CCA_ls_coefs.txt", sep =""))
 
 
 ##### shuffle data and see how SCCA correlation is affected
@@ -147,9 +101,9 @@ cca_mod <- crossing(mod = factor(names(data_mods), levels=names(data_mods)),
   }) %>%
   ungroup
 
-write_tsv(cca_mod, "CCA_expr_rand.txt")
+write_tsv(cca_mod, paste(outdir, "/CCA_expr_rand.txt", sep =""))
 
-cca_mod <- read_tsv("CCA_expr_rand.txt", col_types='ciidd') %>%
+cca_mod <- read_tsv(paste(outdir,"/CCA_expr_rand.txt", sep =""), col_types='ciidd') %>%
   mutate(mod = mod %>%
            fct_recode('Original' = 'original',
                       'Shuffle samples' = 'shuffle samples',
@@ -168,7 +122,7 @@ cca_mod %>%
   ylab("Dot product of first pair of CCA variables") +
   ylim(0, NA) +
   coord_flip()
-ggsave("CCA_expr_rand.pdf", width=6, height=2)
+ggsave(paste(outdir,"/CCA_expr_rand.pdf", sep =""), width=6, height=2)
 
 cca_mod %>%
   group_by(mod) %>%
